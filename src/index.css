@@ -11,15 +11,17 @@
   --btn-radius: 0.75rem;
 }
 
-/* Dark theme overrides (kept for accessibility, toggled by ThemeContext) */
-:root.dark {
-  --bg-main: #0b1020;
-  --text-primary: #e6eef8;
-  --color-primary: #0b122b;
-  --color-accent: #00A8E8;
-  --text-muted: #94a3b8;
-  --card-bg: #0f1724;
-  --card-border: #1f2a3a;
+/* Optional alternate color palette (Emerald + Muted Gold)
+   To enable: add the class "theme-alt" to <html> or <body> (e.g. document.documentElement.classList.add('theme-alt'))
+*/
+.theme-alt {
+  --bg-main: #FFFFFF;
+  --text-primary: #1C2E24; /* Deep Forest Black */
+  --color-primary: #015551; /* Emerald Forest Green */
+  --color-accent: #C8A96B; /* Muted Gold */
+  --text-muted: #627269;
+  --card-bg: #ffffff;
+  --card-border: #e6edf3;
 }
 
 @layer base {
@@ -32,9 +34,16 @@
     color: var(--text-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   }
 
-  a { color: inherit; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Form elements default */
+  input, textarea, select, button {
+    font-family: inherit;
+    color: inherit;
+  }
 }
 
 /* Buttons styled to use the MEEET design tokens */
@@ -81,6 +90,7 @@
   color: var(--text-primary);
   border: 1px solid var(--card-border);
   border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .card-meeet {
@@ -88,6 +98,7 @@
   border: 1px solid var(--card-border);
   border-radius: 1rem;
   box-shadow: 0 8px 30px rgba(12, 18, 30, 0.04);
+  padding: 1rem;
 }
 
 /* Custom Scrollbar for a premium feel */
