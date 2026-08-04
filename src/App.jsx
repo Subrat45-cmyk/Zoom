@@ -25,60 +25,54 @@ import Leaderboard from "./pages/Leaderboard";
 import Settings from "./pages/Settings";
 import NotFoundPage from "./pages/NotFoundPage";
 
-const PrivateRoute = ({ children }) => {
-  // Login.jsx me yehi save ho raha hai
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return children;
-};
+import { AuthProvider } from "./contexts/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <Router>
-          <Routes>
+        <AuthProvider>
+          <Router>
+            <Routes>
 
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<Login />} />
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<Login />} />
 
-            {/* Protected Meeting */}
-            <Route
-              path="/meeting/:id"
-              element={
-                <PrivateRoute>
-                  <VideoMeeting />
-                </PrivateRoute>
-              }
-            />
+              {/* Protected Meeting */}
+              <Route
+                path="/meeting/:id"
+                element={
+                  <PrivateRoute>
+                    <VideoMeeting />
+                  </PrivateRoute>
+                }
+              />
 
-            {/* Protected Dashboard Routes */}
-            <Route
-              element={
-                <PrivateRoute>
-                  <PageLayout />
-                </PrivateRoute>
-              }
-            >
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/create-meeting" element={<CreateMeeting />} />
-              <Route path="/join" element={<JoinMeeting />} />
-              <Route path="/transcript" element={<Transcript />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/settings" element={<Settings />} />
-            </Route>
+              {/* Protected Dashboard Routes */}
+              <Route
+                element={
+                  <PrivateRoute>
+                    <PageLayout />
+                  </PrivateRoute>
+                }
+              >
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/create-meeting" element={<CreateMeeting />} />
+                <Route path="/join" element={<JoinMeeting />} />
+                <Route path="/transcript" element={<Transcript />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/settings" element={<Settings />} />
+              </Route>
 
-            {/* 404 */}
-            <Route path="*" element={<NotFoundPage />} />
+              {/* 404 */}
+              <Route path="*" element={<NotFoundPage />} />
 
-          </Routes>
-        </Router>
+            </Routes>
+          </Router>
+        </AuthProvider>
       </ToastProvider>
     </ThemeProvider>
   );
