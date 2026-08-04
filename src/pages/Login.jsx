@@ -44,34 +44,44 @@ const Login = () => {
         response.data.user.email
       );
 
-      console.log(
-        "Saved Token:",
-        localStorage.getItem("token")
-      );
-
       toast.success(
         "Login Successful",
         "Welcome Back!"
       );
 
-      window.location.replace("/dashboard");  
-      console.log("After navigate");
+      // Navigate to dashboard
+      navigate("/dashboard");
 
     } catch (err) {
       console.log("Login Error:", err);
 
       if (err.response) {
         console.log("Server Response:", err.response.data);
+        toast.error(
+          "Login Failed",
+          err.response?.data?.message || "Invalid credentials"
+        );
+      } else {
+        // Network or backend not running. Offer demo sign-in option.
+        console.log("No server response. Backend may be down.");
+        toast.error(
+          "Server Unreachable",
+          "Login server is not available. You can use the demo account to continue."
+        );
       }
-
-      toast.error(
-        "Login Failed",
-        err.response?.data?.message || "Invalid credentials"
-      );
 
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleDemoLogin = () => {
+    // Set a demo token and demo user details so the app can be demoed without a backend
+    localStorage.setItem('token', 'demo-token');
+    localStorage.setItem('meeet_user_name', 'Demo User');
+    localStorage.setItem('meeet_user_email', 'demo@example.com');
+    toast.success('Demo Login', 'Signed in as Demo User');
+    navigate('/dashboard');
   };
 
   return (
@@ -91,7 +101,7 @@ const Login = () => {
             <Video className="h-6 w-6" />
           </div>
 
-          Meeet
+          MEEET
         </Link>
 
         <h2 className="text-3xl font-bold text-center mb-2">
@@ -132,6 +142,13 @@ const Login = () => {
           </Button>
 
         </form>
+
+        <div className="mt-4 text-center">
+          <p className="text-sm text-slate-500">If the backend is not running, you can use the demo account:</p>
+          <div className="mt-3 flex items-center justify-center gap-3">
+            <Button variant="outline" onClick={handleDemoLogin}>Use Demo Account</Button>
+          </div>
+        </div>
 
       </motion.div>
 
