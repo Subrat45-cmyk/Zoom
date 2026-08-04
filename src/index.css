@@ -1,10 +1,93 @@
 @import "tailwindcss";
-@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-main: #FFFFFF;
+  --text-primary: #1E293B; /* Charcoal */
+  --color-primary: #1A1A40; /* Deep Navy Blue */
+  --color-accent: #00A8E8; /* Electric Sky Blue */
+  --text-muted: #475569;
+  --card-bg: #ffffff;
+  --card-border: #e6edf3;
+  --btn-radius: 0.75rem;
+}
+
+/* Dark theme overrides (kept for accessibility, toggled by ThemeContext) */
+:root.dark {
+  --bg-main: #0b1020;
+  --text-primary: #e6eef8;
+  --color-primary: #0b122b;
+  --color-accent: #00A8E8;
+  --text-muted: #94a3b8;
+  --card-bg: #0f1724;
+  --card-border: #1f2a3a;
+}
 
 @layer base {
-  body {
-    @apply bg-slate-50 dark:bg-gray-950 text-slate-900 dark:text-gray-100 antialiased selection:bg-red-600 selection:text-white;
+  html, body, #app {
+    height: 100%;
   }
+
+  body {
+    background: var(--bg-main);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a { color: inherit; }
+}
+
+/* Buttons styled to use the MEEET design tokens */
+.meeet-btn-primary {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  color: white;
+  border-radius: var(--btn-radius);
+  box-shadow: 0 6px 18px rgba(10, 20, 40, 0.08);
+  border: 0;
+}
+.meeet-btn-primary:hover { filter: brightness(0.95); }
+.meeet-btn-primary:active { transform: translateY(1px); }
+
+.meeet-btn-secondary {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: var(--btn-radius);
+  border: 1px solid var(--card-border);
+}
+.meeet-btn-secondary:hover { background: rgba(0,0,0,0.02); }
+
+.meeet-btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border-radius: var(--btn-radius);
+  border: 1px solid rgba(26,26,64,0.08);
+}
+.meeet-btn-outline:hover { background: rgba(0,0,0,0.02); }
+
+.meeet-btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.meeet-btn-danger {
+  background: linear-gradient(90deg, #ff5a5f, #ff3b3b);
+  color: white;
+  border-radius: var(--btn-radius);
+}
+
+/* Inputs and cards subtle tweaks to match the light aesthetic */
+.input-meeet {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+}
+
+.card-meeet {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  box-shadow: 0 8px 30px rgba(12, 18, 30, 0.04);
 }
 
 /* Custom Scrollbar for a premium feel */
@@ -16,7 +99,6 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-100 rounded-full hover:bg-gray-700 transition-colors;
+  background: rgba(26,26,64,0.06);
+  border-radius: 999px;
 }
-
-
