@@ -6,6 +6,7 @@ import Input from "../components/common/Input";
 import { motion } from "framer-motion";
 import { useToast } from "../components/common/Toast";
 import axios from "axios";
+import GoogleCodeSignIn from "../components/auth/GoogleCodeSignIn";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -148,6 +149,12 @@ const Login = () => {
           <div className="mt-3 flex items-center justify-center gap-3">
             <Button variant="outline" onClick={handleDemoLogin}>Use Demo Account</Button>
           </div>
+        </div>
+
+        {/* Google Sign-in button (uses existing component in src/components/auth/GoogleCodeSignIn.jsx) */}
+        <div className="mt-6">
+          <p className="text-center text-sm text-slate-500 mb-3">Or continue with</p>
+          <GoogleCodeSignIn text="Continue with Google" />
         </div>
 
       </motion.div>
