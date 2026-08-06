@@ -3,6 +3,8 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
@@ -75,7 +77,8 @@ const AUTH_ERROR_MESSAGES = {
   "auth/account-exists-with-different-credential":
     "An account already exists with the same email but different sign-in credentials.",
   "auth/credential-already-in-use": "This credential is already associated with a different user.",
-  "auth/operation-not-allowed": "This sign-in method is not enabled for your Firebase project."
+  "auth/operation-not-allowed": "This sign-in method is not enabled for your Firebase project.",
+  "auth/unauthorized-domain": "The app's domain is not authorized in the Firebase console. Add your domain under Authentication -> Authorized domains."
 };
 
 function mapAuthError(error) {
@@ -93,6 +96,25 @@ setPersistence(auth, browserLocalPersistence).catch(() => {
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
+    return result;
+  } catch (error) {
+    // If popup is blocked or not supported, fallback to redirect sign-in
+    const code = error?.code || '';
+    if (code === 'auth/popup-blocked' || code === 'auth/popup-closed-by-user' || code === 'auth/unauthorized-domain') {
+      // Start redirect sign-in flow; caller should handle the redirect result (on load)
+      await signInWithRedirect(auth, googleProvider);
+      return; // redirecting
+    }
+    const { message } = mapAuthError(error);
+    const e = new Error(message);
+    e.code = code || null;
+    throw e;
+  }
+};
+
+export const handleRedirectResult = async () => {
+  try {
+    const result = await getRedirectResult(auth);
     return result;
   } catch (error) {
     const { message, code } = mapAuthError(error);
