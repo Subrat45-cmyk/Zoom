@@ -1,62 +1,37 @@
-# MEEET (Zoom) - Firebase setup
+# Auth state in React
 
-This project uses Firebase for authentication. The client-side Firebase configuration is initialized in `src/firebase.js` and expects environment variables in a Vite-compatible `.env.local` file.
+Use Firebase's onAuthStateChanged to subscribe to authentication state changes and keep your UI in sync. Below is a minimal example and best practices.
 
-## Setup
+### Example usage
 
-1. Install dependencies
+1. Ensure you have your environment configured (.env.local) and the Firebase helpers exported from `src/firebase.js`.
 
-```bash
-npm install
-# or
-# yarn
+2. Example (see `src/components/AuthExample.jsx` for a working component):
+
+```jsx
+import React, { useEffect, useState } from 'react';
+import { auth, signInWithGoogle, signInWithEmail, signUpWithEmail, signOutUser } from './src/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+
+function useAuth() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  return { user, loading };
+}
+
+export default useAuth;
 ```
 
-2. Create environment file
-
-Copy the provided `.env.example` to `.env.local` and fill in your Firebase project's configuration values:
-
-```bash
-cp .env.example .env.local
-```
-
-Do NOT commit `.env.local` — it contains secrets.
-
-3. Configure Firebase in the Console
-
-- Create a Firebase project at https://console.firebase.google.com/
-- Enable Authentication → Sign-in methods → Email/Password and Google
-- Register a web app and copy the config values into your `.env.local` file
-
-4. Run the dev server
-
-```bash
-npm run dev
-```
-
-## Environment variables
-
-The following Vite-prefixed environment variables are required (already included in `.env.example`):
-
-- VITE_FIREBASE_API_KEY
-- VITE_FIREBASE_AUTH_DOMAIN
-- VITE_FIREBASE_PROJECT_ID
-- VITE_FIREBASE_STORAGE_BUCKET
-- VITE_FIREBASE_MESSAGING_SENDER_ID
-- VITE_FIREBASE_APP_ID
-- VITE_FIREBASE_MEASUREMENT_ID
-
-## Authentication
-
-The Firebase helpers are available at `src/firebase.js` and include:
-
-- signInWithGoogle()
-- signUpWithEmail(email, password)
-- signInWithEmail(email, password)
-- signOutUser()
-
-Use these functions in your React components to add authentication flows.
-
-## Notes
-
-This PR only adds authentication setup and documentation. Video conferencing, WebRTC, room management, transcription, and other meeting features will be implemented in subsequent PRs.
+### Notes
+- Always unsubscribe from onAuthStateChanged when the component unmounts (the example uses the return cleanup function).
+- Keep auth logic centralized (hooks or context) and consume `user` across your app via React Context or state management.
+- On the server side, verify ID tokens using `firebase-admin` before trusting authenticated requests.
